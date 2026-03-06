@@ -1,7 +1,6 @@
-import Image from "next/image"
-import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { Project } from "@/types"
+import ProjectCard from "@/components/ProjectCard"
 
 export const revalidate = 60
 
@@ -12,32 +11,37 @@ export default async function Home() {
     .order("year", { ascending: false })
 
   return (
-    <main className="pt-24 px-1.5 pb-16">
+    <main
+      style={{
+        maxWidth: "780px",
+        margin: "0 auto",
+        padding: "88px 24px 80px",
+      }}
+    >
       {projects && projects.length > 0 ? (
-        <div className="columns-2 md:columns-3 gap-1.5">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "24px",
+          }}
+        >
           {projects.map((project: Project) => (
-            <Link
-              key={project.id}
-              href={`/projects/${project.slug}`}
-              className="block break-inside-avoid mb-1.5 group"
-            >
-              {project.thumbnail_url ? (
-                <Image
-                  src={project.thumbnail_url}
-                  alt={project.title}
-                  width={800}
-                  height={600}
-                  className="w-full h-auto block group-hover:opacity-75 transition-opacity duration-300"
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                />
-              ) : (
-                <div className="w-full aspect-[4/3] bg-[#f0eeeb]" />
-              )}
-            </Link>
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       ) : (
-        <div className="pt-48 text-center text-black/20 text-xs tracking-widest uppercase">
+        <div
+          style={{
+            paddingTop: "120px",
+            textAlign: "center",
+            color: "rgba(0,0,0,0.2)",
+            fontSize: "0.72rem",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+          }}
+        >
           No projects yet.
         </div>
       )}
