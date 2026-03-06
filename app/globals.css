@@ -14,6 +14,8 @@
   --color-accent: var(--accent);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --font-dorian: "Dorian", Georgia, serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* Drop dorian-regular.woff2 into /public/fonts/ to activate */

@@ -20,7 +20,7 @@ export default async function Home() {
           <h1 className="text-[clamp(3.5rem,13vw,14rem)] font-bold leading-[0.9] tracking-tight uppercase text-white">
             BACKERY
           </h1>
-          <div className="flex flex-wrap gap-x-6 gap-y-1 mt-5 text-white/35 text-xs tracking-[0.2em] uppercase">
+          <div className="flex flex-wrap gap-x-6 gap-y-1 mt-5 text-white/40 text-sm tracking-wide font-[family-name:var(--font-dorian)] italic">
             <span>Creative Technologist</span>
             <span>·</span>
             <span>DJ</span>

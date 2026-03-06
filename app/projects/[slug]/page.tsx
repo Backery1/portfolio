@@ -77,10 +77,12 @@ export default async function ProjectPage({ params }: Props) {
 
       {/* Body */}
       <div className="px-6 max-w-2xl">
-        <p className="text-white/60 text-lg leading-relaxed">{project.description}</p>
+        <p className="text-white/60 text-lg leading-relaxed font-[family-name:var(--font-dorian)]">
+          {project.description}
+        </p>
 
         {project.content && (
-          <div className="mt-6 text-white/40 text-base leading-relaxed whitespace-pre-line">
+          <div className="mt-6 text-white/40 text-base leading-relaxed whitespace-pre-line font-[family-name:var(--font-dorian)]">
             {project.content}
           </div>
         )}
