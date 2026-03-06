@@ -5,14 +5,20 @@ import VisualsGrid from "@/components/VisualsGrid"
 export const revalidate = 60
 
 export default async function VisualsPage() {
-  const { data: items } = await supabase
+  const { data } = await supabase
     .from("media")
     .select("*")
-    .order("created_at", { ascending: false })
+    .order("sort_order", { ascending: true })
+
+  const items: MediaItem[] = data ?? []
 
   return (
-    <main className="pt-24">
-      <VisualsGrid items={(items as MediaItem[]) ?? []} />
-    </main>
+    <div className="page-enter">
+      <div className="visuals-header">
+        <div className="visuals-title">Visuals</div>
+        <div className="visuals-sub">Photos · GIFs · Video</div>
+      </div>
+      <VisualsGrid items={items} />
+    </div>
   )
 }

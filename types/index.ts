@@ -1,26 +1,24 @@
 export interface Project {
   id: string
-  title: string
+  name: string
   slug: string
   description: string
-  content?: string
-  category: string
+  scope: string[]
+  categories: string[]
   year: number
-  thumbnail_url: string
-  images?: string[]
-  tags?: string[]
-  external_url?: string
+  cover_color: string
+  thumbnail_url: string | null
+  images: string[]
   featured: boolean
+  sort_order: number
   created_at: string
 }
 
 export interface MediaItem {
   id: string
-  type: "image" | "video"
+  type: "photo" | "gif" | "video"
   url: string
-  thumbnail_url?: string
-  caption?: string
-  alt?: string
-  order_index: number
+  title: string | null
+  sort_order: number
   created_at: string
 }
