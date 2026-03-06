@@ -108,17 +108,19 @@ export default function WorkSection({ projects }: { projects: Project[] }) {
               key={p.id}
               href={`/projects/${p.slug}`}
               className="work-item-thumb"
-              style={{ background: p.cover_color || "hsl(200,8%,78%)" }}
+              style={{ background: p.thumbnail_url ? "transparent" : (p.cover_color || "hsl(200,8%,78%)") }}
             >
-              {p.thumbnail_url && (
+              {p.thumbnail_url ? (
                 <Image
                   src={p.thumbnail_url}
                   alt={p.name}
-                  fill
+                  width={800}
+                  height={600}
                   sizes="(max-width: 640px) 50vw, 25vw"
-                  className="object-cover"
-                  style={{ opacity: 0.85 }}
+                  style={{ width: "100%", height: "auto", display: "block", opacity: 0.92 }}
                 />
+              ) : (
+                <div style={{ aspectRatio: "4/3" }} />
               )}
               <span className="item-label">{p.name}</span>
             </Link>

@@ -16,7 +16,7 @@ export interface Project {
 
 export interface MediaItem {
   id: string
-  type: "photo" | "gif" | "video"
+  type: "photo" | "video"
   url: string
   title: string | null
   sort_order: number

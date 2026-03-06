@@ -14,10 +14,6 @@ export default async function VisualsPage() {
 
   return (
     <div className="page-enter">
-      <div className="visuals-header">
-        <div className="visuals-title">Visuals</div>
-        <div className="visuals-sub">Photos · GIFs · Video</div>
-      </div>
       <VisualsGrid items={items} />
     </div>
   )
