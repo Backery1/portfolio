@@ -12,17 +12,16 @@ const FONTS = [
   '"Optima", Candara, "Segoe UI", sans-serif',
 ]
 
-const CYCLE_MS = 8000   // must match animation-duration in CSS
-const HALF_CYCLE = CYCLE_MS / 2
+const CYCLE_MS = 3500   // must match animation-duration in CSS
 
 export default function MorphText() {
   const [fontIdx, setFontIdx] = useState(0)
 
   useEffect(() => {
-    // Advance font every half-cycle — the switch lands mid-blur so it's invisible
+    // Advance font once per full cycle — switch lands mid-blur so it's invisible
     const t = setInterval(() => {
       setFontIdx(i => (i + 1) % FONTS.length)
-    }, HALF_CYCLE)
+    }, CYCLE_MS)
     return () => clearInterval(t)
   }, [])
 
