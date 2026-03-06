@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
-const TEXTS = ["BACKERY", "SIMON LINDBÄCK"]
+const TEXTS = ["BACKERY", "SIMON LINDBÄCK"] as const
 
 const FONTS = [
   '"Helvetica Neue", Helvetica, Arial, sans-serif',
@@ -12,26 +12,49 @@ const FONTS = [
   '"Optima", Candara, "Segoe UI", sans-serif',
 ]
 
-const CYCLE_MS = 3500   // must match animation-duration in CSS
+// In each 3.5s cycle (see keyframes in globals.css):
+//   Text-A is hidden at 50–80%  →  1750ms–2800ms  →  mid = 2275ms
+//   Text-B is hidden at  0–30%  →     0ms–1050ms  →  change at iteration start
+const CYCLE_MS = 3500
 
 export default function MorphText() {
-  const [fontIdx, setFontIdx] = useState(0)
+  const [fontA, setFontA] = useState(FONTS[0])
+  const [fontB, setFontB] = useState(FONTS[1])
+  const spanARef = useRef<HTMLSpanElement>(null)
+  const fontIdxRef = useRef(2) // A=0, B=1 already used; next is 2
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    // Advance font once per full cycle — switch lands mid-blur so it's invisible
-    const t = setInterval(() => {
-      setFontIdx(i => (i + 1) % FONTS.length)
-    }, CYCLE_MS)
-    return () => clearInterval(t)
+    const el = spanARef.current
+    if (!el) return
+
+    const handleIteration = () => {
+      // Text-B is invisible right now → change its font immediately
+      setFontB(FONTS[fontIdxRef.current % FONTS.length])
+      fontIdxRef.current++
+
+      // Text-A will be invisible at 50–80% → change its font mid-cycle
+      timerRef.current = setTimeout(() => {
+        setFontA(FONTS[fontIdxRef.current % FONTS.length])
+        fontIdxRef.current++
+      }, CYCLE_MS * 0.65) // ~2275ms
+    }
+
+    el.addEventListener("animationiteration", handleIteration)
+    return () => {
+      el.removeEventListener("animationiteration", handleIteration)
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
   }, [])
 
   return (
-    <div
-      className="morph-container"
-      style={{ fontFamily: FONTS[fontIdx] }}
-    >
-      <span className="morph-text-a">{TEXTS[0]}</span>
-      <span className="morph-text-b">{TEXTS[1]}</span>
+    <div className="morph-container">
+      <span ref={spanARef} className="morph-text-a" style={{ fontFamily: fontA }}>
+        {TEXTS[0]}
+      </span>
+      <span className="morph-text-b" style={{ fontFamily: fontB }}>
+        {TEXTS[1]}
+      </span>
     </div>
   )
 }

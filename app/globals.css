@@ -61,7 +61,7 @@ a {
   position: absolute;
   top: 0;
   left: 0;
-  will-change: filter, opacity;
+  will-change: opacity;
   transform: translateZ(0);
 }
 
@@ -73,19 +73,19 @@ a {
   animation: morph-B 3.5s ease-in-out infinite;
 }
 
-/* text-A: visible → blur out → hidden → blur back in */
+/* text-A: visible → fade out → hidden → fade back in */
 @keyframes morph-A {
-  0%, 30%  { opacity: 1; filter: blur(0px)  }
-  50%      { opacity: 0; filter: blur(7px)  }
-  80%      { opacity: 0; filter: blur(7px)  }
-  100%     { opacity: 1; filter: blur(0px)  }
+  0%, 30%  { opacity: 1 }
+  50%      { opacity: 0 }
+  80%      { opacity: 0 }
+  100%     { opacity: 1 }
 }
 
-/* text-B: hidden → blur in → visible → blur back out */
+/* text-B: hidden → fade in → visible → fade back out */
 @keyframes morph-B {
-  0%       { opacity: 0; filter: blur(7px)  }
-  30%      { opacity: 0; filter: blur(7px)  }
-  50%      { opacity: 1; filter: blur(0px)  }
-  80%      { opacity: 1; filter: blur(0px)  }
-  100%     { opacity: 0; filter: blur(7px)  }
+  0%       { opacity: 0 }
+  30%      { opacity: 0 }
+  50%      { opacity: 1 }
+  80%      { opacity: 1 }
+  100%     { opacity: 0 }
 }
