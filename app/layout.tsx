@@ -1,11 +1,10 @@
 import type { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/next"
-import Header from "@/components/Header"
 import "./globals.css"
 
 export const metadata: Metadata = {
   title: "Backery",
-  description: "Creative technologist. DJ. Product builder. Visual creator.",
+  description: "Simon Lindbäck",
 }
 
 export default function RootLayout({
@@ -16,7 +15,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
         {children}
         <Analytics />
       </body>
