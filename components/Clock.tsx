@@ -51,6 +51,10 @@ export default function Clock() {
         {time}
       </span>
 
+      <Link href="/visuals" style={NAV_STYLE}>
+        Visuals
+      </Link>
+
       <Link href="/about" style={NAV_STYLE}>
         About
       </Link>

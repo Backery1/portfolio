@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import Link from "next/link"
 
 const TEXTS = ["BACKERY", "SIMON LINDBÄCK"] as const
 
@@ -48,13 +49,13 @@ export default function MorphText() {
   }, [])
 
   return (
-    <div className="morph-container">
+    <Link href="/" className="morph-container" style={{ textDecoration: "none" }}>
       <span ref={spanARef} className="morph-text-a" style={{ fontFamily: fontA }}>
         {TEXTS[0]}
       </span>
       <span className="morph-text-b" style={{ fontFamily: fontB }}>
         {TEXTS[1]}
       </span>
-    </div>
+    </Link>
   )
 }
