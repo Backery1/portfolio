@@ -139,15 +139,7 @@ export default function WorkSection({ projects }: { projects: Project[] }) {
               max={5}
               value={thumbSize}
               onChange={e => setThumbSize(Number(e.target.value))}
-              style={{
-                appearance: "none",
-                width: "72px",
-                height: "1px",
-                background: "rgba(0,0,0,0.18)",
-                outline: "none",
-                cursor: "pointer",
-                accentColor: "var(--fg)",
-              }}
+              className="grid-slider"
             />
           </label>
         </div>

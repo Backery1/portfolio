@@ -53,21 +53,24 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.01em;
   cursor: pointer;
   user-select: none;
-  color: var(--blue);
+  color: var(--fg);
+  opacity: 0.7;
   min-width: 160px;
+  transition: color 0.15s, opacity 0.15s;
 }
+.logo:hover { color: var(--blue); opacity: 1; }
 
 .site-nav {
   display: flex;
-  gap: 28px;
+  gap: 18px;
   align-items: center;
   font-size: 11.5px;
   letter-spacing: 0.04em;
 }
 .site-nav a, .site-nav button {
-  color: var(--blue);
-  opacity: 0.5;
-  transition: opacity 0.18s;
+  color: var(--fg);
+  opacity: 0.45;
+  transition: color 0.15s, opacity 0.15s;
   cursor: pointer;
   font-weight: 400;
   letter-spacing: 0.04em;
@@ -77,13 +80,13 @@ a { color: inherit; text-decoration: none; }
   font-size: 11.5px;
   padding: 0;
 }
-.site-nav a:hover, .site-nav button:hover,
-.site-nav a.active, .site-nav button.active { opacity: 1; }
+.site-nav a:hover, .site-nav button:hover { color: var(--blue); opacity: 1; }
+.site-nav a.active, .site-nav button.active { color: var(--blue); opacity: 1; }
 
 .nav-clock {
   font-size: 11px;
-  color: var(--blue);
-  opacity: 0.5;
+  color: var(--fg);
+  opacity: 0.35;
   letter-spacing: 0.06em;
   min-width: 58px;
   text-align: right;
@@ -195,7 +198,8 @@ a { color: inherit; text-decoration: none; }
 
 .masonry {
   padding: 3px 32px 60px;
-  column-count: 4; column-gap: 3px;
+  column-count: 4;
+  column-gap: 3px;
 }
 @media (max-width: 1100px) { .masonry { column-count: 3; } }
 @media (max-width: 740px)  { .masonry { column-count: 2; padding-left: 16px; padding-right: 16px; } }
@@ -212,6 +216,72 @@ a { color: inherit; text-decoration: none; }
 .mas-placeholder { width: 100%; display: flex; align-items: center; justify-content: center; color: rgba(26,26,24,0.18); font-size: 11px; font-style: italic; }
 
 /* ── Lightbox ───────────────────────────────────────────── */
+@keyframes lbIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.vis-lightbox {
+  position: fixed; inset: 0; z-index: 900;
+  display: flex; align-items: center; justify-content: center;
+  /* Blue-tinted blurred backdrop */
+  background: rgba(30, 58, 138, 0.18);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  animation: fadeUp 0.2s ease;
+}
+/* Noise grain overlay */
+.vis-lightbox::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* Glass card holding the media */
+.vis-lb-card {
+  position: relative; z-index: 1;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.12);
+  padding: 10px;
+  animation: lbIn 0.22s cubic-bezier(.34,1.2,.64,1);
+  max-width: 88vw;
+  max-height: 84vh;
+  display: flex; flex-direction: column; align-items: center;
+}
+.vis-lb-card img,
+.vis-lb-card video {
+  display: block;
+  max-width: 100%;
+  max-height: calc(84vh - 48px);
+  object-fit: contain;
+}
+
+/* Close + nav buttons */
+.vis-lb-close {
+  position: fixed; top: 22px; right: 28px;
+  color: rgba(255,255,255,0.5); font-size: 24px; line-height: 1;
+  cursor: pointer; background: none; border: none;
+  transition: color 0.15s; z-index: 2;
+}
+.vis-lb-close:hover { color: #fff; }
+.vis-lb-nav {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  color: rgba(255,255,255,0.3); font-size: 28px; line-height: 1;
+  cursor: pointer; background: none; border: none; padding: 20px;
+  transition: color 0.15s; z-index: 2;
+}
+.vis-lb-nav:hover { color: #fff; }
+.vis-lb-prev { left: 8px; }
+.vis-lb-next { right: 8px; }
+
+.vis-lb-info { margin-top: 10px; text-align: center; }
+.vis-lb-title { color: rgba(255,255,255,0.75); font-size: 11.5px; font-family: var(--sans); }
+.vis-lb-counter { color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 0.08em; margin-top: 3px; font-family: var(--sans); }
+
+/* Legacy lightbox (ProjectGallery) */
 .lightbox { display: none; position: fixed; inset: 0; z-index: 900; background: rgba(16,16,14,0.97); align-items: center; justify-content: center; flex-direction: column; }
 .lightbox.open { display: flex; animation: fadeUp 0.18s ease; }
 .lb-close { position: fixed; top: 22px; right: 28px; color: rgba(255,255,255,0.4); font-size: 26px; cursor: pointer; background: none; border: none; line-height: 1; transition: color 0.15s; }
@@ -229,6 +299,36 @@ a { color: inherit; text-decoration: none; }
 .panel h2 { font-family: var(--serif); font-size: 15px; font-weight: 400; font-style: italic; margin-bottom: 18px; }
 .panel p  { font-size: 12.5px; line-height: 1.85; opacity: 0.7; margin-bottom: 14px; }
 .panel a  { color: var(--fg); text-decoration: underline; }
+
+/* ── Slider ─────────────────────────────────────────────── */
+.grid-slider {
+  appearance: none;
+  width: 72px;
+  height: 1px;
+  background: rgba(0,0,0,0.18);
+  outline: none;
+  cursor: pointer;
+}
+.grid-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  background: var(--fg);
+  border-radius: 0;
+  cursor: pointer;
+  transition: border-radius 0.2s cubic-bezier(.34,1.56,.64,1), background 0.15s;
+}
+.grid-slider::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  background: var(--fg);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: border-radius 0.2s cubic-bezier(.34,1.56,.64,1), background 0.15s;
+}
+.grid-slider:hover::-webkit-slider-thumb { border-radius: 50%; background: var(--blue); }
+.grid-slider:hover::-moz-range-thumb     { border-radius: 50%; background: var(--blue); }
 
 /* ── Footer ─────────────────────────────────────────────── */
 footer { padding: 0 32px 24px; font-size: 11px; color: var(--mid); opacity: 0.45; }
