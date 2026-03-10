@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import Image from "next/image"
 import { MediaItem } from "@/types"
 
@@ -97,36 +97,15 @@ export default function VisualsGrid({ items }: { items: MediaItem[] }) {
       </div>
 
       {/* Glass lightbox */}
-      {lbIdx !== null && filtered[lbIdx] && (() => {
-        const v = filtered[lbIdx]
-        const isGif = v.url.toLowerCase().includes(".gif")
-        return (
-          <div className="vis-lightbox" onClick={e => { if (e.target === e.currentTarget) closeLb() }}>
-            <button className="vis-lb-close" onClick={closeLb}>×</button>
-            {filtered.length > 1 && (
-              <>
-                <button className="vis-lb-nav vis-lb-prev" onClick={() => step(-1)}>←</button>
-                <button className="vis-lb-nav vis-lb-next" onClick={() => step(+1)}>→</button>
-              </>
-            )}
-            <div className="vis-lb-card">
-              {v.type === "video" && !isGif ? (
-                <video src={v.url} autoPlay muted loop playsInline controls />
-              ) : isGif ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={v.url} alt={v.title ?? ""} />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={v.url} alt={v.title ?? ""} />
-              )}
-              <div className="vis-lb-info">
-                {v.title && <div className="vis-lb-title">{v.title}</div>}
-                <div className="vis-lb-counter">{lbIdx + 1} / {filtered.length}</div>
-              </div>
-            </div>
-          </div>
-        )
-      })()}
+      {lbIdx !== null && filtered[lbIdx] && (
+        <LightboxItem
+          item={filtered[lbIdx]}
+          idx={lbIdx}
+          total={filtered.length}
+          onClose={closeLb}
+          onStep={step}
+        />
+      )}
 
       {/* Size slider */}
       <div style={{ padding: "0 32px 36px", display: "flex", alignItems: "center", gap: "8px" }}>
@@ -141,5 +120,81 @@ export default function VisualsGrid({ items }: { items: MediaItem[] }) {
         />
       </div>
     </>
+  )
+}
+
+/* ── Lightbox with progressive image loading ── */
+function LightboxItem({
+  item, idx, total, onClose, onStep,
+}: {
+  item: MediaItem
+  idx: number
+  total: number
+  onClose: () => void
+  onStep: (d: number) => void
+}) {
+  const [loaded, setLoaded] = useState(false)
+  const isGif  = item.url.toLowerCase().includes(".gif")
+  const isVideo = item.type === "video" && !isGif
+  const imgRef = useRef<HTMLImageElement>(null)
+
+  // Reset loaded state when item changes
+  useEffect(() => { setLoaded(false) }, [item.url])
+
+  // If img already cached, it won't fire onLoad — check immediately
+  useEffect(() => {
+    if (imgRef.current?.complete) setLoaded(true)
+  }, [item.url])
+
+  return (
+    <div className="vis-lightbox" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+      <button className="vis-lb-close" onClick={onClose}>×</button>
+      {total > 1 && (
+        <>
+          <button className="vis-lb-nav vis-lb-prev" onClick={() => onStep(-1)}>←</button>
+          <button className="vis-lb-nav vis-lb-next" onClick={() => onStep(+1)}>→</button>
+        </>
+      )}
+
+      <div className="vis-lb-card">
+        {isVideo ? (
+          <video src={item.url} autoPlay muted loop playsInline controls />
+        ) : (
+          <>
+            {/* Loading shimmer */}
+            {!loaded && (
+              <div style={{
+                width: "min(80vw, 600px)",
+                height: "min(60vh, 400px)",
+                background: "rgba(255,255,255,0.06)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "11px", letterSpacing: "0.08em" }}>
+                  loading…
+                </span>
+              </div>
+            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={imgRef}
+              src={item.url}
+              alt={item.title ?? ""}
+              onLoad={() => setLoaded(true)}
+              style={{
+                display: loaded ? "block" : "none",
+                maxWidth: "88vw",
+                maxHeight: "calc(84vh - 40px)",
+                objectFit: "contain",
+                boxShadow: "0 16px 64px rgba(0,0,0,0.35)",
+              }}
+            />
+          </>
+        )}
+        <div className="vis-lb-info">
+          {item.title && <div className="vis-lb-title">{item.title}</div>}
+          <div className="vis-lb-counter">{idx + 1} / {total}</div>
+        </div>
+      </div>
+    </div>
   )
 }
