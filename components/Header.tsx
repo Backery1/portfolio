@@ -13,9 +13,7 @@ function getTime() {
 export default function Header() {
   const [logoAlt, setLogoAlt] = useState(false)
   const [time,    setTime]    = useState("")
-  const [atTop,   setAtTop]   = useState(true)
   const pathname = usePathname()
-  const isHome = pathname === "/"
 
   useEffect(() => {
     setTime(getTime())
@@ -24,48 +22,27 @@ export default function Header() {
     return () => { clearInterval(clock); clearInterval(logo) }
   }, [])
 
-  useEffect(() => {
-    const handler = () => setAtTop(window.scrollY < 80)
-    handler()
-    window.addEventListener("scroll", handler, { passive: true })
-    return () => window.removeEventListener("scroll", handler)
-  }, [])
-
-  const dark = isHome && atTop
   const active = (path: string) =>
     pathname === path || (path !== "/" && pathname.startsWith(path))
       ? "active" : ""
 
   return (
-    <header
-      className="site-header"
-      style={{
-        background: dark ? "transparent" : undefined,
-        backdropFilter: dark ? "none" : undefined,
-        WebkitBackdropFilter: dark ? "none" : undefined,
-        borderBottomColor: dark ? "transparent" : undefined,
-        transition: "background 0.4s ease, border-color 0.4s ease",
-      }}
-    >
-      <Link
-        href="/"
-        className="logo"
-        style={{ color: dark ? "rgba(255,255,255,0.85)" : undefined }}
-      >
-        <span style={{ display: logoAlt ? "none" : "inline" }}>Backery</span>
-        <span style={{ display: logoAlt ? "inline" : "none" }}>Simon Lindbäck</span>
+    <header className="site-header">
+      <Link href="/" className="logo">
+        <span className="name-a" style={{ display: logoAlt ? "none" : "inline" }}>
+          Backery
+        </span>
+        <span className="name-b" style={{ display: logoAlt ? "inline" : "none" }}>
+          Simon Lindbäck
+        </span>
       </Link>
 
       <nav className="site-nav">
-        <Link href="/"        className={active("/")}      style={{ color: dark ? "rgba(255,255,255,0.5)" : undefined }}>Work</Link>
-        <Link href="/visuals" className={active("/visuals")} style={{ color: dark ? "rgba(255,255,255,0.5)" : undefined }}>Visuals</Link>
-        <Link href="/about"   className={active("/about")}   style={{ color: dark ? "rgba(255,255,255,0.5)" : undefined }}>About</Link>
-        <a href="mailto:work@backery.no"                      style={{ color: dark ? "rgba(255,255,255,0.5)" : undefined }}>Contact</a>
-        {time && (
-          <span className="nav-clock" style={{ color: dark ? "rgba(255,255,255,0.3)" : undefined }}>
-            {time}
-          </span>
-        )}
+        <Link href="/"        className={active("/")}>Work</Link>
+        <Link href="/visuals" className={active("/visuals")}>Visuals</Link>
+        <Link href="/about"   className={active("/about")}>About</Link>
+        <a href="mailto:work@backery.no">Contact</a>
+        {time && <span className="nav-clock">{time}</span>}
       </nav>
     </header>
   )
